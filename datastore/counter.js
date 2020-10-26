@@ -42,20 +42,30 @@ const writeCounter = (count, callback) => {
 // Public API - Fix this function //////////////////////////////////////////////
 
 exports.getNextUniqueId = (callback) => {
-  //if readCounter fails, increase counter by 1 and call writeCounter
-  //if it succeeds, increase counter by 1 and try again
+    //if it succeeds, counterWrite(counter+1, callback
+    //if it fails,
+
+  //function(arg1, args2) = {...}
+  //function(arg1, arg2, callback) = {...}
+  //function(1, 2, (error, data) => {
+    // if (err) {
+
+    // } else {
+    //   do whatever with data
+    // }
+
+  //})
+
   readCounter((err, count) => {
     if (err) {
       callback(err, null);
     } else {
-      writeCounter(count + 1, (err2, cs)=>{
-        callback(err2, cs);
+      writeCounter(count + 1, (err2, counterString)=> {
+        callback(err2, counterString);
       });
     }
-
-  
-  return zeroPaddedNumber(counter);
 };
+
 
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////

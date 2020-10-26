@@ -13,7 +13,7 @@ exports.create = (text, callback) => {
     if (err) {
       console.log(err);
     } else {
-      
+
     }
   });
   callback(null, { id, text });
