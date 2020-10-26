@@ -16,10 +16,13 @@ const zeroPaddedNumber = (num) => {
 };
 
 const readCounter = (callback) => {
+  //read file takes a path string and a callback
   fs.readFile(exports.counterFile, (err, fileData) => {
+    //if readFile(path) fails, call cb(null, 0)
     if (err) {
       callback(null, 0);
     } else {
+      //if it succeeds, call CB(null, someNumber)
       callback(null, Number(fileData));
     }
   });
@@ -38,11 +41,21 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
-  counter = counter + 1;
+exports.getNextUniqueId = (callback) => {
+  //if readCounter fails, increase counter by 1 and call writeCounter
+  //if it succeeds, increase counter by 1 and try again
+  readCounter((err, count) => {
+    if (err) {
+      callback(err, null);
+    } else {
+      writeCounter(count + 1, (err2, cs)=>{
+        callback(err2, cs);
+      });
+    }
+
+  
   return zeroPaddedNumber(counter);
 };
-
 
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
