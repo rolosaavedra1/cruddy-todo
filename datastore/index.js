@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const counter = require('./counter');
+const Promise = require('bluebird');
+const promReadFile = Promise.promisify(fs.readFile);
 
 var items = {};
 
@@ -26,32 +28,27 @@ exports.create = (text, callback) => {
 };
 
 exports.readAll = (callback) => {
-  // var data = _.map(items, (text, id) => {
-  //fs.readdir(...)     files = array of files in directory
-  var data = [];
   fs.readdir(exports.dataDir, (err, files) => {
     if (err) {
-      callback(err);
-    } else {
-      if (!files.length) {
-        callback(null, []);
-      }
-      _.map(files, (filename) => {
-        fs.readFile(path.join(exports.dataDir, filename), 'utf8', (err2, text) => {
-          if (err2) {
-            callback(err2);
-          }
-          data.push({
-            id: filename.slice(0, filename.length - 4),
-            text: text
-          });
-        });
-        callback(null, data);
-      });
+      return callback(err);
     }
+    var promiseArray = _.map(files, (filename) => {
+      var id = filename.split('.')[0];
+      return promReadFile(path.join(exports.dataDir, filename), {encoding: 'utf-8'}).then((data) => {
+        return {
+          id: id,
+          text: data
+        };
+      });
+    });
+    Promise.all(promiseArray)
+      .then((filesInfo) => {
+        callback(null, filesInfo);
+      });
   });
-
 };
+
+
 
 exports.readOne = (id, callback) => {
   var text = fs.readFile(
@@ -90,24 +87,6 @@ exports.delete = (id, callback) => {
       // something
     }
   });
-  // fs.readdir(exports.dataDir, (err, files) => {
-  //   if (err) {
-  //     callback(err);
-  //   } else {
-  //     if (files.includes(id + '.txt')) {
-
-  //     }
-  //   }
-  // });
-
-  // var item = items[id];
-  // delete items[id];
-  // if (!item) {
-  //   // report an error if item not found
-  //   callback(new Error(`No item with id: ${id}`));
-  // } else {
-  //   callback();
-  // }
 };
 
 // Config+Initialization code -- DO NOT MODIFY /////////////////////////////////
