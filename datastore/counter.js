@@ -42,17 +42,17 @@ const writeCounter = (count, callback) => {
 // Public API - Fix this function //////////////////////////////////////////////
 
 exports.getNextUniqueId = (callback) => {
-    //if it succeeds, counterWrite(counter+1, callback
-    //if it fails,
+  //if it succeeds, counterWrite(counter+1, callback
+  //if it fails,
 
   //function(arg1, args2) = {...}
   //function(arg1, arg2, callback) = {...}
   //function(1, 2, (error, data) => {
-    // if (err) {
+  // if (err) {
 
-    // } else {
-    //   do whatever with data
-    // }
+  // } else {
+  //   do whatever with data
+  // }
 
   //})
 
@@ -60,10 +60,11 @@ exports.getNextUniqueId = (callback) => {
     if (err) {
       callback(err, null);
     } else {
-      writeCounter(count + 1, (err2, counterString)=> {
+      writeCounter(count + 1, (err2, counterString) => {
         callback(err2, counterString);
       });
     }
+  });
 };
 
 
